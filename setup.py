@@ -1,11 +1,12 @@
 import setuptools
+from henipipe import __version__
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
     setuptools.setup(
     name="henipipe",
-    version="2.2.0",
+    version= __version__,
     author="Scott Furlan",
     author_email="scottfurlan@gmail.com",
     description="A python wrapper for fast and parallel processing of sequencing data using CutnRun or CutnTag",
@@ -43,6 +44,8 @@ with open("README.md", "r") as fh:
 cd ~/computation/develop/henipipe/
 rm dist/*
 y
+git commit -a -m "version 2.4.13"
+git push
 python setup.py sdist bdist_wheel
 python -m twine upload dist/*
 scfurl
@@ -77,8 +80,8 @@ pipx uninstall henipipe
 pipx install git+https://github.com/scfurl/henipipe --include-deps
 
 
-## running test data
-ml Python
+## running test data at FH
+ml Python/3.9.6-GCCcore-11.2.0
 pipx uninstall henipipe
 pipx install henipipe
 git clone https://github.com/scfurl/henipipe.git
@@ -89,9 +92,16 @@ henipipe MAKERUNSHEET -fq ../fastq
 awk -F ',' '{print $1, $2}' runsheet.csv
 
 #proceed with henipipe steps
-henipipe ALIGN -t 16 -r runsheet.csv -n spike_in
-henipipe SCALE -r runsheet_fixed.csv -n spike_in
+henipipe ALIGN -t 4 -r runsheet.csv
+henipipe SCALE -r runsheet_fixed.csv
 henipipe SEACR -r runsheet_fixed.csv
 
+
+## running dest data at SCRI
+cd /home/sfurla/develop/henipipe/test_data
+mkdir henipipe
+cd henipipe
+henipipe MAKERUNSHEET -fq ../fastq -c PBS -gk furlan_hg38
+henipipe ALIGN -t 4 -r runsheet.csv -c PBS
 
 """

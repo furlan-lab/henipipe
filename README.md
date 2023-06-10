@@ -13,9 +13,21 @@
 
 
 
-Version 2.2.0
+Version 2.4.13
 
 A python wrapper for processing of sequencing data generated using CutnRun or CutnTag (developed by the Henikoff lab FHCRC).  Now with a single-cell option ('SC') for processing CutnTag data generated using the iCell8 platform (Takara).
+
+## New in version 2.4.x
+
+1. Added a --version function
+2. In version 2.4.9 - environs.json was properly configured for PBS and see below for how to run henipipe with a project code (PBS only)
+
+## New in version 2.3
+
+1. Henipipe adds a new function, DEDUP.  DEDUP will remove presumed PCR duplicates from the bed file but leave a record of how many were detected.  The DEDUP funciton is meant to be used after ALIGN and before other downstream functions.  It will replace the bed file with a collapsed bedfile with a new column that counts the number of presumed duplicates found.  Note that read pairs will be collapsed regardless of strand and all strand data will be changed to positive.  
+2. Henipipe adds a new function, BLACKLIST.  BLACKLIST will remove bed entries that overlap with a user-specified blacklist file designated with the '-bl' flag.
+2. Changes to MACS2 function were made in this version to allow custom parameters to be passed to MACS2 peak calling using the -M2p flag.
+3. Fixed a bug in SCALE function
 
 ## New in version 2.2
 
@@ -329,6 +341,20 @@ henipipe SC -fq fastq -o henipipe_sc -gk FH_mm10_unmasked
 ### Henipipe SC options and disclaimers
 
 Henipipe SC was written to accomodate iCell8 output.  As such, it should be able to parse the fastq folder and find paired fastq files.  That being said, it has not been exhaustively debugged.  Let us know if you have an issue using by submitting an issue through github.  Henipipe SC peak files will be generated using SEACR 1.3 (1.4 coming soon), but only by specifying an FDR value (See SEACR for more information).  The FDR is set using the '--SEACR_fdr' flag with a default of 0.05.  Future versions of henipipe will allow for use of this setting for bulk data but currently henipipe SEACR functionality in bulk still requires a control input file.
+
+### Using a project code
+
+Henipipe is not engineered to accept project codes.  However for PBS job submission systems, henipipe file will capture a global environmental variable called PROJECT and run jobs with that specific project code.
+
+For example (note this code is made up)
+
+```sh
+export PROJECT=e05c3b6h-5a82-4943-uj87-2659cea32a54
+henipipe ALIGN -t 16 -r runsheet.csv -c PBS
+
+```
+
+
 
 ## Acknowledgements
 
